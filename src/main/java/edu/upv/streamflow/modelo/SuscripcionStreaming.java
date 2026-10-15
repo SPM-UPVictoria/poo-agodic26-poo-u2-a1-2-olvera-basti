@@ -16,30 +16,30 @@ public class SuscripcionStreaming extends Suscripcion {
 
     public SuscripcionStreaming(String codigoContrato, double tarifaBase, int perfilesAdicionales, double costoPorPerfilAdicional) {
         super(codigoContrato, tarifaBase);
-        // TODO: Validar que perfilesAdicionales no sea negativo (lanzar IllegalArgumentException).
-        // TODO: Validar que costoPorPerfilAdicional no sea negativo (lanzar IllegalArgumentException).
-        // TODO: Inicializar los atributos correspondientes.
+        if (perfilesAdicionales < 0) {
+            throw new IllegalArgumentException("Los perfiles adicionales no pueden ser negativos");
+        }
+        if (costoPorPerfilAdicional < 0) {
+            throw new IllegalArgumentException("El costo por perfil adicional no puede ser negativo");
+        }
+        this.perfilesAdicionales = perfilesAdicionales;
+        this.costoPorPerfilAdicional = costoPorPerfilAdicional;
     }
 
     public void agregarPerfil() {
-        // TODO: Incrementar la cantidad de perfiles adicionales en 1.
-        // TODO [Aprovisionamiento simultáneo]: Incrementar en 2 slots por política de concurrencia.
+        perfilesAdicionales++;
     }
 
     @Override
     public double calcularMontoFacturable() {
-        // TODO: Retornar tarifaBase + (perfilesAdicionales * costoPorPerfilAdicional).
-        // TODO [Recargo de infraestructura]: Multiplicar el total por 1.10 si existen perfiles adicionales.
-        return 0.0;
+        return tarifaBase + (perfilesAdicionales * costoPorPerfilAdicional);
     }
 
     public int getPerfilesAdicionales() {
-        // TODO: Implementar retorno de perfilesAdicionales
-        return 0;
+        return perfilesAdicionales;
     }
 
     public double getCostoPorPerfilAdicional() {
-        // TODO: Implementar retorno de costoPorPerfilAdicional
-        return 0.0;
+        return costoPorPerfilAdicional;
     }
 }

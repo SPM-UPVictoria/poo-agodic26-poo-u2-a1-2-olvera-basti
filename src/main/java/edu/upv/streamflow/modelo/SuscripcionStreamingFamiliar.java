@@ -14,15 +14,12 @@ public class SuscripcionStreamingFamiliar extends SuscripcionStreaming {
 
     public SuscripcionStreamingFamiliar(String codigoContrato, double tarifaBase, int perfilesAdicionales, double costoPorPerfilAdicional) {
         super(codigoContrato, tarifaBase, perfilesAdicionales, costoPorPerfilAdicional);
-        // TODO: Invocación al constructor de la superclase completada. Realizar validaciones adicionales si aplica.
     }
 
     @Override
     public double calcularMontoFacturable() {
-        // TODO: Calcular tarifa bonificando 1 perfil adicional sin costo:
-        // Si perfilesAdicionales > 1, solo se cobran (perfilesAdicionales - 1) * costoPorPerfilAdicional.
-        // Si perfilesAdicionales <= 1, solo se cobra la tarifaBase.
-        // TODO [Campaña Super Familiar]: Bonificar 2 perfiles extra en lugar de 1 (cobrar solo a partir del 3er perfil).
-        return 0.0;
+        // Se bonifica 1 perfil adicional: solo se cobran los perfiles que excedan de 1.
+        int perfilesCobrables = Math.max(0, perfilesAdicionales - 1);
+        return tarifaBase + (perfilesCobrables * costoPorPerfilAdicional);
     }
 }

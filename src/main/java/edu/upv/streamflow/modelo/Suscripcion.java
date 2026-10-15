@@ -23,39 +23,43 @@ public abstract class Suscripcion implements Facturable, Cancelable {
     protected boolean activo;
 
     public Suscripcion(String codigoContrato, double tarifaBase) {
-        // TODO: Validar que codigoContrato no sea nulo ni vacío (lanzar IllegalArgumentException).
-        // TODO: Validar que tarifaBase no sea negativa (lanzar IllegalArgumentException).
-        // TODO: Inicializar atributos y definir el estado activo en true.
+        if (codigoContrato == null || codigoContrato.isBlank()) {
+            throw new IllegalArgumentException("El código de contrato no puede ser nulo ni vacío");
+        }
+        if (tarifaBase < 0) {
+            throw new IllegalArgumentException("La tarifa base no puede ser negativa");
+        }
+        this.codigoContrato = codigoContrato;
+        this.tarifaBase = tarifaBase;
+        this.activo = true;
     }
 
     public String getCodigoContrato() {
-        // TODO: Implementar retorno de codigoContrato
-        return null;
+        return codigoContrato;
     }
 
     public double getTarifaBase() {
-        // TODO: Implementar retorno de tarifaBase
-        return 0.0;
+        return tarifaBase;
     }
 
     @Override
     public void cancelarServicio() {
-        // TODO: Establecer el estado activo en false
+        this.activo = false;
     }
 
     @Override
     public boolean estaActivo() {
-        // TODO: Retornar el estado activo de la suscripción
-        return false;
+        return activo;
     }
 
     @Override
     public void procesarCobro(Cliente cliente) throws TransaccionRechazadaException {
-        // TODO: Verificar si la suscripción está activa; si no lo está, lanzar SuscripcionInactivaException.
-        // TODO [Directiva de canal]: Si no está activa, propagar IllegalStateException para integración con el pipeline.
-        // TODO: Calcular el monto facturable delegando en calcularMontoFacturable().
-        // TODO: Debitar el monto calculado del saldo del cliente.
-        // TODO [Cierre de ciclo]: Invocar cancelarServicio() tras debitar para evitar doble cargo en el ciclo.
+        if (!activo) {
+            throw new SuscripcionInactivaException(
+                    "No se puede cobrar la suscripción " + codigoContrato + ": está inactiva");
+        }
+        double monto = calcularMontoFacturable();
+        cliente.debitarSaldo(monto);
     }
 
     @Override
